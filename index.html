@@ -1,0 +1,1674 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>The Block - Bloxorz Style</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;600;700&display=swap');
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body, html {
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            background-color: #0a0a0f;
+            font-family: 'Rajdhani', sans-serif;
+            user-select: none;
+        }
+
+        #game-container {
+            position: relative;
+            width: 100%;
+            height: 100%;
+        }
+
+        #game-canvas {
+            display: block;
+            width: 100%;
+            height: 100%;
+            outline: none;
+            background-color: #0a0a1a;
+        }
+
+        .screen {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.5s ease;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            z-index: 10;
+            padding: 30px;
+        }
+
+        .screen.active {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        /* === MAIN MENU === */
+        #main-menu {
+            background: radial-gradient(circle at center, transparent 0%, #0a0a0f 100%);
+            justify-content: center;
+            align-items: center;
+        }
+
+        .menu-content {
+            text-align: center;
+        }
+
+        .title-container {
+            margin-bottom: 50px;
+        }
+
+        .glitch {
+            font-size: 90px;
+            font-weight: 700;
+            color: #fff;
+            letter-spacing: 20px;
+            margin: 0;
+            text-shadow: 0 0 30px rgba(0, 200, 255, 0.8), 3px 3px 0px #ff0040, -3px -3px 0px #00e6f6;
+            animation: glitch 3s infinite;
+        }
+
+        @keyframes glitch {
+            0%, 100% { transform: skew(0deg); }
+            2% { transform: skew(2deg); }
+            4% { transform: skew(-2deg); }
+            6% { transform: skew(0deg); }
+        }
+
+        .subtitle {
+            color: #00ccff;
+            font-size: 22px;
+            letter-spacing: 10px;
+            font-weight: 600;
+            text-shadow: 0 0 20px rgba(0, 200, 255, 0.4);
+            margin-top: 10px;
+        }
+
+        .menu-options {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            align-items: center;
+        }
+
+        .menu-footer {
+            position: absolute;
+            bottom: 20px;
+            color: #333;
+            font-size: 13px;
+            letter-spacing: 3px;
+        }
+
+        /* === LEVEL SELECT === */
+        #level-select-menu {
+            background: rgba(10, 10, 15, 0.95);
+            justify-content: center;
+            align-items: center;
+            backdrop-filter: blur(15px);
+        }
+
+        .section-title {
+            color: #00ccff;
+            font-size: 40px;
+            letter-spacing: 10px;
+            margin-bottom: 30px;
+            text-shadow: 0 0 20px rgba(0, 200, 255, 0.5);
+        }
+
+        .levels-grid {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 15px;
+            max-width: 700px;
+        }
+
+        .lvl-btn {
+            width: 80px;
+            height: 80px;
+            background: rgba(20, 30, 50, 0.8);
+            border: 2px solid #00ccff;
+            color: white;
+            font-size: 28px;
+            font-family: 'Rajdhani', sans-serif;
+            font-weight: 700;
+            cursor: pointer;
+            box-shadow: 0 0 15px rgba(0, 200, 255, 0.1);
+            transition: all 0.3s ease;
+            position: relative;
+            border-radius: 8px;
+        }
+
+        .lvl-btn:hover:not(:disabled) {
+            background: #00ccff;
+            color: #000;
+            box-shadow: 0 0 30px rgba(0, 200, 255, 0.6);
+            transform: scale(1.1);
+        }
+
+        .lvl-btn:disabled {
+            border-color: #333;
+            color: #555;
+            background: #111;
+            cursor: not-allowed;
+            box-shadow: none;
+            opacity: 0.5;
+        }
+
+        .lvl-btn .stars {
+            font-size: 12px;
+            display: block;
+            margin-top: 3px;
+            color: #ffd700;
+            text-shadow: 0 0 10px #ffd700;
+        }
+
+        .lvl-btn .level-number {
+            position: absolute;
+            top: 5px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 14px;
+            color: #888;
+        }
+
+        /* === HUD === */
+        #hud-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+        }
+
+        #level-title {
+            color: #00ccff;
+            font-size: 24px;
+            font-weight: 700;
+            letter-spacing: 4px;
+            text-shadow: 0 0 15px rgba(0, 200, 255, 0.4);
+            display: flex;
+            flex-direction: column;
+        }
+
+        #level-title .subtitle {
+            color: #fff;
+            font-size: 14px;
+            letter-spacing: 3px;
+            opacity: 0.7;
+        }
+
+        #move-counter {
+            background: rgba(10, 15, 25, 0.8);
+            border: 2px solid #00ccff;
+            padding: 8px 25px;
+            border-radius: 10px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            box-shadow: 0 0 20px rgba(0, 200, 255, 0.15);
+            backdrop-filter: blur(5px);
+        }
+
+        #move-counter .label {
+            color: #8899aa;
+            font-size: 11px;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+        }
+
+        #move-counter .value {
+            color: #ffffff;
+            font-size: 32px;
+            font-weight: 700;
+            text-shadow: 0 0 20px rgba(255, 255, 255, 0.3);
+        }
+
+        #hud-bottom {
+            display: flex;
+            justify-content: space-between;
+            gap: 10px;
+        }
+
+        /* === BUTTONS === */
+        .cyber-button {
+            background: rgba(10, 15, 25, 0.85);
+            color: #00ccff;
+            border: 2px solid #00ccff;
+            padding: 12px 35px;
+            font-family: 'Rajdhani', sans-serif;
+            font-size: 18px;
+            font-weight: 700;
+            letter-spacing: 3px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 0 15px rgba(0, 200, 255, 0.1);
+            text-transform: uppercase;
+            border-radius: 8px;
+        }
+
+        .cyber-button.primary {
+            background: #00ccff;
+            color: #000;
+            box-shadow: 0 0 30px rgba(0, 200, 255, 0.4);
+        }
+
+        .cyber-button:hover {
+            background: #fff;
+            color: #000;
+            border-color: #fff;
+            box-shadow: 0 0 40px rgba(255, 255, 255, 0.3);
+            transform: translateY(-2px);
+        }
+
+        .action-btn {
+            padding: 8px 18px;
+            font-size: 14px;
+            pointer-events: auto;
+            border-radius: 6px;
+        }
+
+        /* === MODAL === */
+        .win-modal {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(10, 15, 25, 0.95);
+            border: 2px solid #00ccff;
+            padding: 50px 70px;
+            border-radius: 15px;
+            color: white;
+            text-align: center;
+            box-shadow: 0 0 60px rgba(0, 200, 255, 0.3);
+            backdrop-filter: blur(15px);
+            pointer-events: auto;
+            z-index: 100;
+            min-width: 350px;
+        }
+
+        .win-modal h2 {
+            color: #00ff88;
+            font-size: 45px;
+            margin: 0 0 5px 0;
+            letter-spacing: 5px;
+            text-shadow: 0 0 30px rgba(0, 255, 136, 0.4);
+        }
+
+        .win-modal h3 {
+            color: #fff;
+            font-size: 22px;
+            margin: 0 0 25px 0;
+            font-weight: 400;
+            opacity: 0.8;
+        }
+
+        .win-modal .stars {
+            font-size: 50px;
+            margin-bottom: 30px;
+            filter: drop-shadow(0 0 20px rgba(255, 215, 0, 0.6));
+        }
+
+        .win-modal .moves-info {
+            color: #8899aa;
+            font-size: 16px;
+            margin-bottom: 25px;
+        }
+
+        .win-modal .moves-info span {
+            color: #fff;
+            font-weight: 700;
+        }
+
+        /* === DEATH MODAL === */
+        .death-modal {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(20, 5, 10, 0.95);
+            border: 2px solid #ff0040;
+            padding: 40px 60px;
+            border-radius: 15px;
+            color: white;
+            text-align: center;
+            box-shadow: 0 0 60px rgba(255, 0, 64, 0.3);
+            backdrop-filter: blur(15px);
+            pointer-events: auto;
+            z-index: 100;
+            min-width: 300px;
+        }
+
+        .death-modal h2 {
+            color: #ff0040;
+            font-size: 40px;
+            margin: 0 0 10px 0;
+            letter-spacing: 5px;
+            text-shadow: 0 0 30px rgba(255, 0, 64, 0.4);
+        }
+
+        .death-modal h3 {
+            color: #fff;
+            font-size: 18px;
+            margin: 0 0 25px 0;
+            font-weight: 400;
+            opacity: 0.7;
+        }
+
+        .death-modal .death-icon {
+            font-size: 60px;
+            margin-bottom: 15px;
+        }
+
+        #hud-container {
+            background: transparent !important;
+        }
+
+        /* === RESPONSIVIDADE === */
+        @media (max-width: 768px) {
+            .glitch {
+                font-size: 50px;
+                letter-spacing: 10px;
+            }
+            .subtitle {
+                font-size: 16px;
+                letter-spacing: 5px;
+            }
+            .cyber-button {
+                padding: 10px 20px;
+                font-size: 14px;
+            }
+            .levels-grid {
+                grid-template-columns: repeat(4, 1fr);
+                gap: 10px;
+            }
+            .lvl-btn {
+                width: 60px;
+                height: 60px;
+                font-size: 20px;
+            }
+            .win-modal, .death-modal {
+                padding: 30px 25px;
+                min-width: auto;
+                width: 90%;
+            }
+            .win-modal h2 {
+                font-size: 30px;
+            }
+            .win-modal .stars {
+                font-size: 35px;
+            }
+            .death-modal h2 {
+                font-size: 30px;
+            }
+            #move-counter {
+                padding: 5px 15px;
+            }
+            #move-counter .value {
+                font-size: 24px;
+            }
+            .screen {
+                padding: 15px;
+            }
+            #level-title {
+                font-size: 18px;
+            }
+            .action-btn {
+                padding: 6px 12px;
+                font-size: 12px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .glitch {
+                font-size: 32px;
+                letter-spacing: 5px;
+            }
+            .levels-grid {
+                grid-template-columns: repeat(3, 1fr);
+                gap: 8px;
+            }
+            .lvl-btn {
+                width: 50px;
+                height: 50px;
+                font-size: 16px;
+            }
+            .lvl-btn .stars {
+                font-size: 9px;
+            }
+            .win-modal, .death-modal {
+                padding: 20px;
+            }
+            .win-modal h2 {
+                font-size: 24px;
+            }
+            .win-modal h3 {
+                font-size: 16px;
+            }
+            .win-modal .stars {
+                font-size: 28px;
+            }
+            .death-modal h2 {
+                font-size: 24px;
+            }
+            .death-modal .death-icon {
+                font-size: 40px;
+            }
+            .section-title {
+                font-size: 28px;
+                letter-spacing: 5px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div id="game-container">
+        <canvas id="game-canvas"></canvas>
+        
+        <div id="main-menu" class="screen active">
+            <div class="menu-content">
+                <div class="title-container">
+                    <h1 class="glitch">THE BLOCK</h1>
+                    <p class="subtitle">✦ DESAFIO ✦</p>
+                </div>
+                
+                <div class="menu-options">
+                    <button id="btn-play" class="cyber-button primary">▶ INICIAR JORNADA</button>
+                    <button id="btn-level-select" class="cyber-button">📋 SELEÇÃO DE FASES</button>
+                </div>
+            </div>
+            <div class="menu-footer">
+                Desenvolvido por ricks
+            </div>
+        </div>
+
+        <div id="level-select-menu" class="screen">
+            <div class="menu-content">
+                <h2 class="section-title">✦ FASES ✦</h2>
+                <div id="levels-grid" class="levels-grid"></div>
+                <button id="btn-back-menu" class="cyber-button" style="margin-top: 25px;">⬅ VOLTAR</button>
+            </div>
+        </div>
+
+        <div id="hud-container" class="screen">
+            <div id="hud-top">
+                <div id="level-title">
+                    SETOR I 
+                    <span class="subtitle" id="level-subtitle">Fase 1</span>
+                </div>
+                <div id="move-counter">
+                    <span class="label">MOVIMENTOS</span>
+                    <span class="value" id="moves-val">0</span>
+                </div>
+            </div>
+            <div id="hud-bottom">
+                <button id="undo-button" class="cyber-button action-btn">↩ DESFAZER</button>
+                <button id="reset-button" class="cyber-button action-btn" style="border-color:#ff0040;color:#ff0040;">⟳ REINICIAR</button>
+                <button id="menu-button" class="cyber-button action-btn">☰ MENU</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+    
+    <script>
+        // ==========================================
+        // THE BLOCK - VERSÃO MELHORADA
+        // ==========================================
+
+        console.log('=== INICIANDO THE BLOCK ===');
+
+        // ==========================================
+        // STORAGE MANAGER
+        // ==========================================
+        class StorageManager {
+            constructor() {
+                this.saveKey = 'theblock_save_v5';
+                this.data = this.load();
+                console.log('StorageManager carregado:', this.data);
+            }
+            load() {
+                try {
+                    const data = localStorage.getItem(this.saveKey);
+                    if (data) {
+                        return JSON.parse(data);
+                    }
+                } catch (e) {
+                    console.warn('Erro ao carregar save:', e);
+                }
+                return { unlockedLevels: 1, levels: {} };
+            }
+            save() {
+                try {
+                    localStorage.setItem(this.saveKey, JSON.stringify(this.data));
+                } catch (e) {
+                    console.warn('Erro ao salvar:', e);
+                }
+            }
+            getUnlockedLevels() {
+                return this.data.unlockedLevels || 1;
+            }
+            saveLevelProgress(levelIndex, stars, moves) {
+                if (!this.data.levels[levelIndex]) {
+                    this.data.levels[levelIndex] = { stars: 0, bestMoves: 999 };
+                }
+                const lvl = this.data.levels[levelIndex];
+                lvl.stars = Math.max(lvl.stars || 0, stars);
+                lvl.bestMoves = Math.min(lvl.bestMoves || 999, moves);
+                if (levelIndex + 1 > this.data.unlockedLevels) {
+                    this.data.unlockedLevels = levelIndex + 1;
+                }
+                this.save();
+                console.log('Progresso salvo - Fase', levelIndex + 1, 'Estrelas:', stars, 'Movimentos:', moves);
+                console.log('Níveis desbloqueados:', this.data.unlockedLevels);
+            }
+        }
+
+        // ==========================================
+        // AUDIO MANAGER
+        // ==========================================
+        class AudioManager {
+            constructor() {
+                try {
+                    this.ctx = new (window.AudioContext || window.webkitAudioContext)();
+                } catch (e) {
+                    this.ctx = null;
+                }
+            }
+            playTone(freq, type, duration, vol = 0.1) {
+                if (!this.ctx) return;
+                try {
+                    if (this.ctx.state === 'suspended') this.ctx.resume();
+                    const osc = this.ctx.createOscillator();
+                    const gain = this.ctx.createGain();
+                    osc.type = type;
+                    osc.frequency.setValueAtTime(freq, this.ctx.currentTime);
+                    gain.gain.setValueAtTime(vol, this.ctx.currentTime);
+                    gain.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime + duration);
+                    osc.connect(gain);
+                    gain.connect(this.ctx.destination);
+                    osc.start();
+                    osc.stop(this.ctx.currentTime + duration);
+                } catch (e) {}
+            }
+            playThud() {
+                this.playTone(80, 'square', 0.15, 0.08);
+                setTimeout(() => this.playTone(60, 'sine', 0.2, 0.08), 50);
+            }
+            playMove() {
+                this.playTone(500, 'sine', 0.08, 0.05);
+            }
+            playWin() {
+                this.playTone(523.25, 'sine', 0.15, 0.1);
+                setTimeout(() => this.playTone(659.25, 'sine', 0.15, 0.1), 150);
+                setTimeout(() => this.playTone(783.99, 'sine', 0.3, 0.12), 300);
+                setTimeout(() => this.playTone(1046.50, 'sine', 0.5, 0.15), 450);
+            }
+            playFall() {
+                if (!this.ctx) return;
+                try {
+                    const osc = this.ctx.createOscillator();
+                    const gain = this.ctx.createGain();
+                    osc.type = 'sawtooth';
+                    osc.frequency.setValueAtTime(300, this.ctx.currentTime);
+                    osc.frequency.exponentialRampToValueAtTime(30, this.ctx.currentTime + 0.8);
+                    gain.gain.setValueAtTime(0.15, this.ctx.currentTime);
+                    gain.gain.linearRampToValueAtTime(0.01, this.ctx.currentTime + 0.8);
+                    osc.connect(gain);
+                    gain.connect(this.ctx.destination);
+                    osc.start();
+                    osc.stop(this.ctx.currentTime + 0.8);
+                } catch (e) {}
+            }
+            playDeath() {
+                this.playTone(200, 'sawtooth', 0.3, 0.15);
+                setTimeout(() => this.playTone(150, 'sawtooth', 0.3, 0.12), 150);
+                setTimeout(() => this.playTone(100, 'sawtooth', 0.5, 0.1), 300);
+            }
+            startDrone() {}
+        }
+
+        // ==========================================
+        // GRID SYSTEM
+        // ==========================================
+        class GridSystem {
+            constructor() {
+                this.map = [];
+                this.history = [];
+                this.startState = null;
+            }
+            setMap(mapData) {
+                this.map = mapData;
+                this.history = [];
+                console.log('Mapa carregado:', mapData.length, 'linhas');
+            }
+            setStartState(x, z, state) {
+                this.startState = { x, z, state };
+            }
+            getStartState() {
+                return this.startState || { x: 0, z: 0, state: 'VERTICAL' };
+            }
+            getTilesOccupied(x, z, state) {
+                if (state === 'VERTICAL') return [{x, z}];
+                if (state === 'HORIZONTAL_X') return [{x, z}, {x: x + 1, z}];
+                if (state === 'HORIZONTAL_Z') return [{x, z}, {x, z: z + 1}];
+                return [];
+            }
+            isValidPosition(tiles, state) {
+                for (let tile of tiles) {
+                    if (tile.z < 0 || tile.z >= this.map.length) return false;
+                    if (tile.x < 0 || tile.x >= this.map[0].length) return false;
+                    const type = this.map[tile.z][tile.x];
+                    if (type === 0) return false;
+                    if (type === 2 && state === 'VERTICAL') return 'BREAK';
+                }
+                return true;
+            }
+            checkWin(tiles, state) {
+                if (state === 'VERTICAL' && tiles.length === 1) {
+                    if (this.map[tiles[0].z] && this.map[tiles[0].z][tiles[0].x] === 3) {
+                        return true;
+                    }
+                }
+                return false;
+            }
+            saveState(blockData) {
+                this.history.push({ x: blockData.x, z: blockData.z, state: blockData.state });
+            }
+            undo() {
+                return this.history.length > 0 ? this.history.pop() : null;
+            }
+            getMoveCount() {
+                return this.history.length;
+            }
+            resetHistory() {
+                this.history = [];
+            }
+        }
+
+        // ==========================================
+        // CONTROLS
+        // ==========================================
+        class Controls {
+            constructor(onMove, onUndo, onReset) {
+                this.onMove = onMove;
+                this.onUndo = onUndo;
+                this.onReset = onReset;
+                this.active = false;
+                
+                window.addEventListener('keydown', this.handleKeyDown.bind(this));
+                
+                this.touchStartX = 0;
+                this.touchStartY = 0;
+                window.addEventListener('touchstart', e => {
+                    this.touchStartX = e.changedTouches[0].screenX;
+                    this.touchStartY = e.changedTouches[0].screenY;
+                }, {passive: true});
+                
+                window.addEventListener('touchend', e => {
+                    if (!this.active) return;
+                    let diffX = e.changedTouches[0].screenX - this.touchStartX;
+                    let diffY = e.changedTouches[0].screenY - this.touchStartY;
+                    if (Math.abs(diffX) > Math.abs(diffY)) {
+                        if (Math.abs(diffX) > 30) {
+                            this.onMove(diffX > 0 ? 'right' : 'left');
+                        }
+                    } else {
+                        if (Math.abs(diffY) > 30) {
+                            this.onMove(diffY > 0 ? 'down' : 'up');
+                        }
+                    }
+                }, {passive: true});
+                
+                console.log('Controles criados');
+            }
+            handleKeyDown(event) {
+                if (!this.active) return;
+                switch (event.key) {
+                    case 'ArrowUp': case 'w': case 'W': 
+                        event.preventDefault();
+                        this.onMove('up'); 
+                        break;
+                    case 'ArrowDown': case 's': case 'S': 
+                        event.preventDefault();
+                        this.onMove('down'); 
+                        break;
+                    case 'ArrowLeft': case 'a': case 'A': 
+                        event.preventDefault();
+                        this.onMove('left'); 
+                        break;
+                    case 'ArrowRight': case 'd': case 'D': 
+                        event.preventDefault();
+                        this.onMove('right'); 
+                        break;
+                    case 'z': case 'Z': 
+                        event.preventDefault();
+                        this.onUndo(); 
+                        break;
+                    case 'r': case 'R':
+                        event.preventDefault();
+                        this.onReset();
+                        break;
+                }
+            }
+        }
+
+        // ==========================================
+        // BLOCK - MELHORADO
+        // ==========================================
+        class Block {
+            constructor(scene, gridSystem, audioManager, onMoveComplete, onDeath) {
+                this.scene = scene;
+                this.gridSystem = gridSystem;
+                this.audioManager = audioManager;
+                this.onMoveComplete = onMoveComplete;
+                this.onDeath = onDeath;
+                this.gridPos = { x: 0, z: 0 };
+                this.state = 'VERTICAL';
+                this.isAnimating = false;
+                this.isDead = false;
+                this.createMesh();
+            }
+            
+            createMesh() {
+                const group = new THREE.Group();
+                
+                // Bloco principal
+                const geometry = new THREE.BoxGeometry(1, 2, 1);
+                this.material = new THREE.MeshStandardMaterial({
+                    color: 0x00ccff,
+                    emissive: 0x0066aa,
+                    emissiveIntensity: 0.3,
+                    metalness: 0.9,
+                    roughness: 0.1,
+                    transparent: true,
+                    opacity: 0.95
+                });
+                this.mainMesh = new THREE.Mesh(geometry, this.material);
+                this.mainMesh.castShadow = true;
+                group.add(this.mainMesh);
+                
+                // Bordas neon
+                const edges = new THREE.LineSegments(
+                    new THREE.EdgesGeometry(geometry),
+                    new THREE.LineBasicMaterial({ color: 0x00ffff })
+                );
+                this.mainMesh.add(edges);
+                
+                // Brilho interno
+                const glowGeo = new THREE.BoxGeometry(0.7, 1.7, 0.7);
+                const glowMat = new THREE.MeshBasicMaterial({
+                    color: 0x00ccff,
+                    transparent: true,
+                    opacity: 0.15,
+                    blending: THREE.AdditiveBlending
+                });
+                const glow = new THREE.Mesh(glowGeo, glowMat);
+                this.mainMesh.add(glow);
+                
+                // Luz pontual
+                const light = new THREE.PointLight(0x00ccff, 0.5, 3);
+                light.position.set(0, 1, 0);
+                this.mainMesh.add(light);
+                
+                // Sombra no chão (efeito visual)
+                const shadowGeo = new THREE.CircleGeometry(0.6, 16);
+                const shadowMat = new THREE.MeshBasicMaterial({
+                    color: 0x000000,
+                    transparent: true,
+                    opacity: 0.3,
+                    depthWrite: false
+                });
+                this.shadow = new THREE.Mesh(shadowGeo, shadowMat);
+                this.shadow.rotation.x = -Math.PI / 2;
+                this.shadow.position.y = -0.15;
+                group.add(this.shadow);
+                
+                this.mesh = group;
+                this.scene.add(this.mesh);
+                console.log('Bloco criado!');
+            }
+            
+            setPosition(x, z, state = 'VERTICAL', animate = false) {
+                this.gridPos = { x, z };
+                this.state = state;
+                if (animate) {
+                    this.isAnimating = true;
+                    gsap.to(this.mesh.position, {
+                        x: this.getWorldX(),
+                        z: this.getWorldZ(),
+                        duration: 0.3,
+                        ease: "power2.out",
+                        onComplete: () => {
+                            this.isAnimating = false;
+                            this.updateWorldPosition();
+                        }
+                    });
+                } else {
+                    this.updateWorldPosition();
+                }
+            }
+            
+            getWorldX() {
+                let x = this.gridPos.x;
+                if (this.state === 'HORIZONTAL_X') x += 0.5;
+                return x;
+            }
+            
+            getWorldZ() {
+                let z = this.gridPos.z;
+                if (this.state === 'HORIZONTAL_Z') z += 0.5;
+                return z;
+            }
+            
+            updateWorldPosition() {
+                this.mesh.rotation.set(0, 0, 0);
+                this.mesh.position.set(this.getWorldX(), 0, this.getWorldZ());
+                if (this.state === 'VERTICAL') {
+                    this.mesh.position.y = 1;
+                    this.mainMesh.scale.set(1, 1, 1);
+                    this.shadow.scale.set(1, 1, 1);
+                } else if (this.state === 'HORIZONTAL_X') {
+                    this.mesh.position.y = 0.5;
+                    this.mainMesh.scale.set(2, 0.5, 1);
+                    this.shadow.scale.set(2, 1, 1);
+                } else if (this.state === 'HORIZONTAL_Z') {
+                    this.mesh.position.y = 0.5;
+                    this.mainMesh.scale.set(1, 0.5, 2);
+                    this.shadow.scale.set(1, 1, 2);
+                }
+            }
+            
+            move(direction) {
+                if (this.isAnimating || this.isDead) return;
+                let nx = this.gridPos.x, nz = this.gridPos.z, nState = this.state;
+                let pivotX = 0, pivotZ = 0, axis = '', angle = 0;
+
+                if (this.state === 'VERTICAL') {
+                    if (direction === 'up') { nState = 'HORIZONTAL_Z'; nz -= 2; pivotZ = -0.5; axis = 'x'; angle = -Math.PI/2; }
+                    if (direction === 'down') { nState = 'HORIZONTAL_Z'; nz += 1; pivotZ = 0.5; axis = 'x'; angle = Math.PI/2; }
+                    if (direction === 'left') { nState = 'HORIZONTAL_X'; nx -= 2; pivotX = -0.5; axis = 'z'; angle = Math.PI/2; }
+                    if (direction === 'right') { nState = 'HORIZONTAL_X'; nx += 1; pivotX = 0.5; axis = 'z'; angle = -Math.PI/2; }
+                } else if (this.state === 'HORIZONTAL_X') {
+                    if (direction === 'up') { nState = 'HORIZONTAL_X'; nz -= 1; pivotZ = -0.5; pivotX = 0.5; axis = 'x'; angle = -Math.PI/2; }
+                    if (direction === 'down') { nState = 'HORIZONTAL_X'; nz += 1; pivotZ = 0.5; pivotX = 0.5; axis = 'x'; angle = Math.PI/2; }
+                    if (direction === 'left') { nState = 'VERTICAL'; nx -= 1; pivotX = -0.5; axis = 'z'; angle = Math.PI/2; }
+                    if (direction === 'right') { nState = 'VERTICAL'; nx += 2; pivotX = 1.5; axis = 'z'; angle = -Math.PI/2; }
+                } else if (this.state === 'HORIZONTAL_Z') {
+                    if (direction === 'up') { nState = 'VERTICAL'; nz -= 1; pivotZ = -0.5; axis = 'x'; angle = -Math.PI/2; }
+                    if (direction === 'down') { nState = 'VERTICAL'; nz += 2; pivotZ = 1.5; axis = 'x'; angle = Math.PI/2; }
+                    if (direction === 'left') { nState = 'HORIZONTAL_Z'; nx -= 1; pivotX = -0.5; pivotZ = 0.5; axis = 'z'; angle = Math.PI/2; }
+                    if (direction === 'right') { nState = 'HORIZONTAL_Z'; nx += 1; pivotX = 0.5; pivotZ = 0.5; axis = 'z'; angle = -Math.PI/2; }
+                }
+
+                const tiles = this.gridSystem.getTilesOccupied(nx, nz, nState);
+                const isValid = this.gridSystem.isValidPosition(tiles, nState);
+
+                this.isAnimating = true;
+                this.audioManager.playMove();
+
+                const pivot = new THREE.Group();
+                pivot.position.set(this.gridPos.x + pivotX, 0, this.gridPos.z + pivotZ);
+                this.scene.add(pivot);
+                pivot.attach(this.mesh);
+                
+                gsap.to(pivot.rotation, {
+                    [axis]: angle,
+                    duration: 0.3,
+                    ease: "power2.inOut",
+                    onComplete: () => {
+                        this.scene.attach(this.mesh);
+                        this.scene.remove(pivot);
+                        this.gridPos = { x: nx, z: nz };
+                        this.state = nState;
+                        this.updateWorldPosition();
+                        if (!isValid || isValid === 'BREAK') {
+                            if (isValid === 'BREAK') {
+                                this.audioManager.playFall();
+                                gsap.fromTo(this.scene.position, {y: 0.1}, {y: 0, duration: 0.2, ease: "bounce.out"});
+                            }
+                            this.die();
+                        } else {
+                            this.audioManager.playThud();
+                            this.isAnimating = false;
+                            if (this.onMoveComplete) this.onMoveComplete();
+                        }
+                    }
+                });
+            }
+            
+            die() {
+                if (this.isDead) return;
+                this.isDead = true;
+                this.isAnimating = false;
+                this.audioManager.playDeath();
+                
+                // Efeito de morte - explode em partículas
+                this.mainMesh.material.color.setHex(0xff0040);
+                this.mainMesh.material.emissive.setHex(0xff0040);
+                this.mainMesh.material.emissiveIntensity = 1;
+                
+                gsap.to(this.mesh.position, {
+                    y: -2,
+                    duration: 0.5,
+                    ease: "power2.in",
+                    onComplete: () => {
+                        // Resetar visual
+                        this.mainMesh.material.color.setHex(0x00ccff);
+                        this.mainMesh.material.emissive.setHex(0x0066aa);
+                        this.mainMesh.material.emissiveIntensity = 0.3;
+                        this.mesh.position.y = 0;
+                        this.isDead = false;
+                        if (this.onDeath) this.onDeath();
+                    }
+                });
+                
+                gsap.to(this.mainMesh.material, {
+                    opacity: 0,
+                    duration: 0.3,
+                    onComplete: () => {
+                        this.mainMesh.material.opacity = 0.95;
+                    }
+                });
+            }
+            
+            resetPosition(x, z, state) {
+                this.isAnimating = false;
+                this.isDead = false;
+                this.gridPos = { x, z };
+                this.state = state;
+                this.updateWorldPosition();
+                this.mainMesh.material.color.setHex(0x00ccff);
+                this.mainMesh.material.emissive.setHex(0x0066aa);
+                this.mainMesh.material.emissiveIntensity = 0.3;
+                this.mainMesh.material.opacity = 0.95;
+            }
+        }
+
+        // ==========================================
+        // LEVEL DATA - 12 NÍVEIS
+        // ==========================================
+        const LEVEL_DATA = [
+            { map: [[1,1,1],[1,1,1],[1,3,1],[1,1,1]], start: {x: 1, z: 0}, idealMoves: 3 },
+            { map: [[1,1,1,1,1,0],[1,1,1,1,1,0],[0,0,1,1,0,0],[0,0,1,1,1,1],[0,0,1,3,1,1]], start: {x: 1, z: 0}, idealMoves: 6 },
+            { map: [[1,1,1,1],[1,1,1,1],[1,2,2,1],[1,1,3,1]], start: {x: 1, z: 0}, idealMoves: 7 },
+            { map: [[1,1,1,0,0,0],[1,1,1,1,1,1],[0,0,0,0,3,1],[0,0,0,0,1,1]], start: {x: 1, z: 0}, idealMoves: 8 },
+            { map: [[1,1,1,1,0,0,0],[1,1,2,1,1,1,1],[0,0,1,2,2,3,1],[0,0,1,1,1,1,1]], start: {x: 1, z: 0}, idealMoves: 10 },
+            { map: [[1,1,1,0,0,1,1,1],[1,1,1,0,0,1,3,1],[1,1,1,1,1,1,1,1],[0,0,1,1,1,0,0,0]], start: {x: 1, z: 0}, idealMoves: 12 },
+            { map: [[1,1,1,2,2,1,1],[1,1,1,0,0,1,1],[0,0,2,2,2,1,1],[0,0,1,3,1,0,0]], start: {x: 1, z: 0}, idealMoves: 11 },
+            { map: [[1,1,1,0,0,0,0,0],[1,1,1,1,1,1,0,0],[0,0,0,0,1,1,1,1],[0,0,0,0,0,1,3,1],[0,0,0,0,0,1,1,1]], start: {x: 1, z: 0}, idealMoves: 14 },
+            { map: [[1,1,1,2,1,1],[1,1,1,2,1,1],[0,0,1,2,1,1],[0,0,1,2,3,1],[0,0,1,1,1,1]], start: {x: 1, z: 0}, idealMoves: 16 },
+            { map: [[1,1,1,1,1,1,1,1],[1,2,2,2,2,2,2,1],[1,1,0,0,0,0,1,1],[0,1,1,1,0,1,3,1],[0,1,1,1,0,1,1,1]], start: {x: 1, z: 0}, idealMoves: 20 },
+            { map: [[1,1,1,1,1,1],[1,1,1,1,1,1],[1,1,2,2,1,1],[0,0,1,2,3,1],[0,0,1,1,1,1]], start: {x: 1, z: 0}, idealMoves: 12 },
+            { map: [[1,1,1,1,1,1,1],[1,1,2,2,2,1,1],[0,0,1,1,1,0,0],[0,0,1,3,1,0,0],[0,0,1,1,1,0,0]], start: {x: 1, z: 0}, idealMoves: 15 }
+        ];
+
+        // ==========================================
+        // LEVEL MANAGER
+        // ==========================================
+        class LevelManager {
+            constructor(scene, gridSystem) {
+                this.scene = scene;
+                this.gridSystem = gridSystem;
+                this.tiles = [];
+                this.currentLevelIndex = 0;
+                this.animations = [];
+                this.startPosition = null;
+            }
+            
+            loadLevel(index) {
+                this.currentLevelIndex = index;
+                const data = LEVEL_DATA[index];
+                this.gridSystem.setMap(data.map);
+                this.startPosition = data.start;
+                this.gridSystem.setStartState(data.start.x, data.start.z, 'VERTICAL');
+                this.buildVisuals(data.map);
+                return data.start;
+            }
+            
+            getStartPosition() {
+                return this.startPosition || { x: 0, z: 0 };
+            }
+            
+            buildVisuals(map) {
+                this.tiles.forEach(t => {
+                    if (t.parent) this.scene.remove(t);
+                });
+                this.tiles = [];
+                this.animations = [];
+                
+                const tileGeo = new THREE.BoxGeometry(0.9, 0.2, 0.9);
+                
+                for (let z = 0; z < map.length; z++) {
+                    for (let x = 0; x < map[z].length; x++) {
+                        const type = map[z][x];
+                        if (type === 0) continue;
+                        
+                        let color, emissive, emissiveIntensity = 0.1;
+                        if (type === 1) {
+                            color = 0x1a3a5a;
+                            emissive = 0x0a1a3a;
+                        } else if (type === 2) {
+                            color = 0x6a2be2;
+                            emissive = 0x4400aa;
+                            emissiveIntensity = 0.3;
+                        } else if (type === 3) {
+                            color = 0x00ff88;
+                            emissive = 0x00ff88;
+                            emissiveIntensity = 0.6;
+                        }
+                        
+                        const mat = new THREE.MeshStandardMaterial({
+                            color: color,
+                            emissive: emissive || 0x000000,
+                            emissiveIntensity: emissiveIntensity,
+                            metalness: 0.3,
+                            roughness: 0.7,
+                            transparent: type === 2,
+                            opacity: type === 2 ? 0.8 : 1
+                        });
+                        
+                        const mesh = new THREE.Mesh(tileGeo, mat);
+                        mesh.position.set(x, -0.1, z);
+                        mesh.receiveShadow = true;
+                        
+                        if (type === 3) {
+                            // Efeito de objetivo
+                            const pillar = new THREE.Mesh(
+                                new THREE.CylinderGeometry(0.05, 0.3, 8, 8),
+                                new THREE.MeshBasicMaterial({
+                                    color: 0x00ff88,
+                                    transparent: true,
+                                    opacity: 0.2,
+                                    blending: THREE.AdditiveBlending
+                                })
+                            );
+                            pillar.position.y = 4;
+                            mesh.add(pillar);
+                            
+                            const ring = new THREE.Mesh(
+                                new THREE.RingGeometry(0.35, 0.5, 16),
+                                new THREE.MeshBasicMaterial({
+                                    color: 0x00ff88,
+                                    transparent: true,
+                                    opacity: 0.6,
+                                    side: THREE.DoubleSide,
+                                    blending: THREE.AdditiveBlending
+                                })
+                            );
+                            ring.rotation.x = Math.PI / 2;
+                            ring.position.y = 0.15;
+                            mesh.add(ring);
+                            
+                            this.animations.push({ ring, mesh });
+                        }
+                        
+                        this.scene.add(mesh);
+                        this.tiles.push(mesh);
+                    }
+                }
+                console.log('Nível carregado com', this.tiles.length, 'tiles');
+            }
+            
+            updateAnimations(time) {
+                this.animations.forEach((item, i) => {
+                    if (item.ring) {
+                        const scale = 1 + Math.sin(time * 2 + i * 0.5) * 0.1;
+                        item.ring.scale.set(scale, scale, 1);
+                        item.ring.material.opacity = 0.4 + Math.sin(time * 2 + i * 0.5) * 0.2;
+                    }
+                });
+            }
+        }
+
+        // ==========================================
+        // GAME - CLASSE PRINCIPAL MELHORADA
+        // ==========================================
+        class Game {
+            constructor() {
+                console.log('Inicializando Game...');
+                
+                this.canvas = document.getElementById('game-canvas');
+                if (!this.canvas) {
+                    console.error('Canvas não encontrado!');
+                    return;
+                }
+
+                // Cena
+                this.scene = new THREE.Scene();
+                this.scene.background = new THREE.Color(0x0a0a1a);
+                this.scene.fog = new THREE.Fog(0x0a0a1a, 20, 35);
+
+                // Sistema de grid
+                this.gridSystem = new GridSystem();
+                this.audioManager = new AudioManager();
+                this.storageManager = new StorageManager();
+                this.levelManager = new LevelManager(this.scene, this.gridSystem);
+                
+                this.state = 'MENU';
+                this.currentLevel = 0;
+                this.isGameOver = false;
+
+                // Camera - Perspectiva isométrica
+                const aspect = window.innerWidth / window.innerHeight;
+                this.camera = new THREE.PerspectiveCamera(40, aspect, 0.1, 100);
+                this.camera.position.set(8, 10, 8);
+                this.camera.lookAt(0, 0, 0);
+                this.camera.updateProjectionMatrix();
+                console.log('Câmera configurada');
+
+                // Renderer
+                this.renderer = new THREE.WebGLRenderer({
+                    canvas: this.canvas,
+                    antialias: true,
+                    alpha: false
+                });
+                this.renderer.setSize(window.innerWidth, window.innerHeight);
+                this.renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+                this.renderer.shadowMap.enabled = true;
+                this.renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+                this.renderer.toneMapping = THREE.ACESFilmicToneMapping;
+                this.renderer.toneMappingExposure = 1.2;
+                console.log('Renderer configurado');
+
+                // Luzes
+                this.setupLights();
+
+                // Chão
+                this.createFloor();
+
+                // Partículas
+                this.createParticles();
+
+                // Bloco
+                this.block = new Block(
+                    this.scene, 
+                    this.gridSystem, 
+                    this.audioManager,
+                    () => this.checkGameState(),
+                    () => this.handleDeath()
+                );
+                console.log('Bloco criado');
+
+                // UI
+                this.setupUI();
+                this.showMainMenu();
+
+                // Controles
+                this.controls = new Controls(
+                    (dir) => {
+                        if (this.state !== 'PLAYING' || this.block.isAnimating || this.isGameOver) return;
+                        this.gridSystem.saveState(this.block);
+                        this.block.move(dir);
+                        this.updateMoveCounter();
+                    },
+                    () => {
+                        if (this.state !== 'PLAYING' || this.block.isAnimating || this.isGameOver) return;
+                        const lastState = this.gridSystem.undo();
+                        if (lastState) {
+                            this.block.setPosition(lastState.x, lastState.z, lastState.state);
+                            this.updateMoveCounter();
+                            this.audioManager.playTone(600, 'triangle', 0.1, 0.05);
+                        }
+                    },
+                    () => {
+                        if (this.state !== 'PLAYING' || this.block.isAnimating) return;
+                        this.resetLevel();
+                    }
+                );
+
+                // Resize
+                window.addEventListener('resize', () => {
+                    const asp = window.innerWidth / window.innerHeight;
+                    this.camera.aspect = asp;
+                    this.camera.updateProjectionMatrix();
+                    this.renderer.setSize(window.innerWidth, window.innerHeight);
+                });
+
+                // Botões
+                const undoBtn = document.getElementById('undo-button');
+                if (undoBtn) {
+                    undoBtn.onclick = () => {
+                        if (this.controls) this.controls.onUndo();
+                    };
+                }
+
+                const resetBtn = document.getElementById('reset-button');
+                if (resetBtn) {
+                    resetBtn.onclick = () => {
+                        if (this.controls) this.controls.onReset();
+                    };
+                }
+
+                // Loop
+                this.clock = new THREE.Clock();
+                this.animate = this.animate.bind(this);
+                this.animate();
+
+                console.log('Game inicializado com sucesso!');
+            }
+
+            createFloor() {
+                // Chão grande
+                const floorGeo = new THREE.PlaneGeometry(40, 40);
+                const floorMat = new THREE.MeshStandardMaterial({
+                    color: 0x0a1a3a,
+                    metalness: 0.1,
+                    roughness: 0.9,
+                    side: THREE.DoubleSide
+                });
+                this.floor = new THREE.Mesh(floorGeo, floorMat);
+                this.floor.rotation.x = -Math.PI / 2;
+                this.floor.position.y = -0.2;
+                this.floor.receiveShadow = true;
+                this.scene.add(this.floor);
+
+                // Grid helper
+                const gridHelper = new THREE.GridHelper(20, 20, 0x00ccff, 0x1a3a6a);
+                gridHelper.position.y = -0.1;
+                this.scene.add(gridHelper);
+                
+                console.log('Chão criado');
+            }
+
+            setupLights() {
+                // Luz ambiente
+                const ambient = new THREE.AmbientLight(0x334466, 0.5);
+                this.scene.add(ambient);
+                
+                // Luz principal
+                const dirLight = new THREE.DirectionalLight(0xffaa55, 1.5);
+                dirLight.position.set(10, 20, 10);
+                dirLight.castShadow = true;
+                dirLight.shadow.mapSize.width = 1024;
+                dirLight.shadow.mapSize.height = 1024;
+                this.scene.add(dirLight);
+                
+                // Luz de preenchimento
+                const fillLight = new THREE.DirectionalLight(0x4488ff, 0.6);
+                fillLight.position.set(-10, 5, -10);
+                this.scene.add(fillLight);
+                
+                // Luz ciano
+                const cyanLight = new THREE.DirectionalLight(0x00ccff, 0.4);
+                cyanLight.position.set(0, 5, 10);
+                this.scene.add(cyanLight);
+
+                // Luz de fundo
+                const backLight = new THREE.DirectionalLight(0x6633ff, 0.3);
+                backLight.position.set(-5, 0, -10);
+                this.scene.add(backLight);
+                
+                console.log('Luzes configuradas');
+            }
+
+            createParticles() {
+                const pGeo = new THREE.BufferGeometry();
+                const count = 500;
+                const posArray = new Float32Array(count * 3);
+                for (let i = 0; i < count * 3; i += 3) {
+                    posArray[i] = (Math.random() - 0.5) * 50;
+                    posArray[i+1] = Math.random() * 20 - 5;
+                    posArray[i+2] = (Math.random() - 0.5) * 50;
+                }
+                pGeo.setAttribute('position', new THREE.BufferAttribute(posArray, 3));
+                
+                const colors = new Float32Array(count * 3);
+                for (let i = 0; i < count * 3; i += 3) {
+                    colors[i] = 0.2 + Math.random() * 0.3;
+                    colors[i+1] = 0.5 + Math.random() * 0.5;
+                    colors[i+2] = 0.8 + Math.random() * 0.2;
+                }
+                pGeo.setAttribute('color', new THREE.BufferAttribute(colors, 3));
+                
+                this.particleSystem = new THREE.Points(
+                    pGeo,
+                    new THREE.PointsMaterial({
+                        size: 0.08,
+                        vertexColors: true,
+                        transparent: true,
+                        opacity: 0.6,
+                        blending: THREE.AdditiveBlending
+                    })
+                );
+                this.scene.add(this.particleSystem);
+            }
+
+            setupUI() {
+                const btnPlay = document.getElementById('btn-play');
+                const btnLevelSelect = document.getElementById('btn-level-select');
+                const btnBackMenu = document.getElementById('btn-back-menu');
+                const btnMenu = document.getElementById('menu-button');
+
+                if (btnPlay) {
+                    btnPlay.onclick = () => {
+                        console.log('Botão INICIAR JORNADA clicado!');
+                        const unlocked = this.storageManager.getUnlockedLevels();
+                        console.log('Níveis desbloqueados:', unlocked);
+                        const levelToStart = Math.min(unlocked - 1, LEVEL_DATA.length - 1);
+                        if (levelToStart < 0) {
+                            console.warn('Nenhum nível desbloqueado, iniciando fase 0');
+                            this.startLevel(0);
+                        } else {
+                            console.log('Iniciando fase:', levelToStart + 1);
+                            this.startLevel(levelToStart);
+                        }
+                    };
+                }
+
+                if (btnLevelSelect) {
+                    btnLevelSelect.onclick = () => {
+                        console.log('Botão SELEÇÃO DE FASES clicado');
+                        document.getElementById('main-menu').classList.remove('active');
+                        document.getElementById('level-select-menu').classList.add('active');
+                        this.populateLevels();
+                    };
+                }
+
+                if (btnBackMenu) {
+                    btnBackMenu.onclick = () => {
+                        document.getElementById('level-select-menu').classList.remove('active');
+                        document.getElementById('main-menu').classList.add('active');
+                    };
+                }
+
+                if (btnMenu) {
+                    btnMenu.onclick = () => this.showMainMenu();
+                }
+
+                console.log('UI configurada');
+            }
+
+            populateLevels() {
+                const grid = document.getElementById('levels-grid');
+                if (!grid) return;
+                grid.innerHTML = '';
+                const unlocked = this.storageManager.getUnlockedLevels();
+                console.log('Populando níveis - Desbloqueados:', unlocked);
+                
+                LEVEL_DATA.forEach((_, i) => {
+                    const btn = document.createElement('button');
+                    btn.className = 'lvl-btn';
+                    
+                    if (i < unlocked) {
+                        const stars = this.storageManager.data.levels[i]?.stars || 0;
+                        btn.innerHTML = `
+                            <span class="level-number">${i + 1}</span>
+                            ${i + 1}
+                            <span class="stars">${'⭐'.repeat(stars)}</span>
+                        `;
+                        btn.onclick = () => {
+                            console.log('Selecionando fase:', i + 1);
+                            this.startLevel(i);
+                        };
+                    } else {
+                        btn.innerHTML = `🔒`;
+                        btn.disabled = true;
+                    }
+                    grid.appendChild(btn);
+                });
+            }
+
+            showMainMenu() {
+                console.log('Mostrando menu principal');
+                this.state = 'MENU';
+                this.isGameOver = false;
+                document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+                const mainMenu = document.getElementById('main-menu');
+                if (mainMenu) mainMenu.classList.add('active');
+                const hud = document.getElementById('hud-container');
+                if (hud) hud.classList.remove('active');
+                
+                const modal = document.querySelector('.win-modal');
+                if (modal) modal.remove();
+                const deathModal = document.querySelector('.death-modal');
+                if (deathModal) deathModal.remove();
+                
+                if (this.controls) this.controls.active = false;
+                
+                if (this.levelManager) {
+                    this.levelManager.tiles.forEach(t => {
+                        if (t.parent) this.scene.remove(t);
+                    });
+                    this.levelManager.tiles = [];
+                    this.levelManager.animations = [];
+                }
+                if (this.block) {
+                    this.block.resetPosition(0, 0, 'VERTICAL');
+                }
+                console.log('Menu principal ativo');
+            }
+
+            startLevel(index) {
+                console.log('Iniciando fase:', index + 1);
+                if (index >= LEVEL_DATA.length) {
+                    console.warn('Índice inválido, voltando para 0');
+                    index = 0;
+                }
+                if (index < 0) index = 0;
+                
+                this.state = 'PLAYING';
+                this.currentLevel = index;
+                this.isGameOver = false;
+                
+                document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+                const hud = document.getElementById('hud-container');
+                if (hud) hud.classList.add('active');
+                
+                const modal = document.querySelector('.win-modal');
+                if (modal) modal.remove();
+                const deathModal = document.querySelector('.death-modal');
+                if (deathModal) deathModal.remove();
+
+                const subtitle = document.getElementById('level-subtitle');
+                if (subtitle) subtitle.innerText = `Fase ${index + 1}`;
+                
+                this.updateMoveCounter();
+                
+                const startPos = this.levelManager.loadLevel(index);
+                this.block.resetPosition(startPos.x, startPos.z, 'VERTICAL');
+                this.gridSystem.resetHistory();
+                
+                const map = LEVEL_DATA[index].map;
+                const centerX = (map[0].length - 1) / 2;
+                const centerZ = (map.length - 1) / 2;
+                const size = Math.max(map[0].length, map.length);
+                
+                const distance = size * 1.8 + 4;
+                this.camera.position.set(centerX + distance * 0.7, distance * 0.8, centerZ + distance * 0.7);
+                this.camera.lookAt(centerX, 0, centerZ);
+                this.camera.updateProjectionMatrix();
+
+                if (this.controls) this.controls.active = true;
+                console.log('Fase', index + 1, 'iniciada!');
+            }
+
+            resetLevel() {
+                console.log('Reiniciando fase...');
+                const startPos = this.levelManager.getStartPosition();
+                this.block.resetPosition(startPos.x, startPos.z, 'VERTICAL');
+                this.gridSystem.resetHistory();
+                this.isGameOver = false;
+                this.updateMoveCounter();
+                
+                const deathModal = document.querySelector('.death-modal');
+                if (deathModal) deathModal.remove();
+                
+                this.audioManager.playTone(400, 'sine', 0.1, 0.05);
+            }
+
+            handleDeath() {
+                console.log('Morte!');
+                this.isGameOver = true;
+                this.controls.active = false;
+                
+                // Mostrar modal de morte
+                const deathDiv = document.createElement('div');
+                deathDiv.className = 'death-modal';
+                deathDiv.innerHTML = `
+                    <div class="death-icon">💀</div>
+                    <h2>FALHOU!</h2>
+                    <h3>O bloco caiu no vazio</h3>
+                    <button id="retry-btn" class="cyber-button primary" style="border-color:#ff0040;color:#ff0040;">⟳ TENTAR NOVAMENTE</button>
+                `;
+                document.getElementById('game-container').appendChild(deathDiv);
+                gsap.fromTo(deathDiv, {opacity: 0, scale: 0.8, y: -30}, {
+                    opacity: 1,
+                    scale: 1,
+                    y: 0,
+                    duration: 0.5,
+                    ease: "back.out(1.7)"
+                });
+
+                document.getElementById('retry-btn').onclick = () => {
+                    deathDiv.remove();
+                    this.resetLevel();
+                    this.controls.active = true;
+                };
+            }
+
+            checkGameState() {
+                const tiles = this.gridSystem.getTilesOccupied(
+                    this.block.gridPos.x,
+                    this.block.gridPos.z,
+                    this.block.state
+                );
+                if (this.gridSystem.checkWin(tiles, this.block.state)) {
+                    console.log('Vitória!');
+                    this.controls.active = false;
+                    this.audioManager.playWin();
+                    
+                    const moves = this.gridSystem.getMoveCount();
+                    const ideal = LEVEL_DATA[this.levelManager.currentLevelIndex].idealMoves;
+                    let stars = 1;
+                    if (moves <= ideal) stars = 3;
+                    else if (moves <= ideal * 1.4) stars = 2;
+
+                    this.storageManager.saveLevelProgress(this.levelManager.currentLevelIndex, stars, moves);
+                    
+                    const winDiv = document.createElement('div');
+                    winDiv.className = 'win-modal';
+                    winDiv.innerHTML = `
+                        <h2>✦ VITÓRIA ✦</h2>
+                        <h3>Fase ${this.levelManager.currentLevelIndex + 1} Concluída</h3>
+                        <div class="stars">${'⭐'.repeat(stars)}${'<span style="opacity:0.2">⭐</span>'.repeat(3-stars)}</div>
+                        <div class="moves-info">Movimentos: <span>${moves}</span> (Ideal: ${ideal})</div>
+                        <button id="next-lvl" class="cyber-button primary">▶ PRÓXIMA FASE</button>
+                    `;
+                    document.getElementById('game-container').appendChild(winDiv);
+                    gsap.fromTo(winDiv, {opacity: 0, scale: 0.8, y: -50}, {
+                        opacity: 1, 
+                        scale: 1, 
+                        y: 0, 
+                        duration: 0.6, 
+                        ease: "back.out(1.7)"
+                    });
+
+                    document.getElementById('next-lvl').onclick = () => {
+                        winDiv.remove();
+                        if (this.levelManager.currentLevelIndex + 1 < LEVEL_DATA.length) {
+                            this.startLevel(this.levelManager.currentLevelIndex + 1);
+                        } else {
+                            // Jogo completo!
+                            winDiv.innerHTML = `
+                                <h2>🏆 PARABÉNS! 🏆</h2>
+                                <h3>Você completou todas as fases!</h3>
+                                <button id="back-to-menu" class="cyber-button primary">VOLTAR AO MENU</button>
+                            `;
+                            document.getElementById('game-container').appendChild(winDiv);
+                            document.getElementById('back-to-menu').onclick = () => {
+                                winDiv.remove();
+                                this.showMainMenu();
+                            };
+                        }
+                    };
+                }
+            }
+
+            updateMoveCounter() {
+                const movesEl = document.getElementById('moves-val');
+                if (movesEl) movesEl.innerText = this.gridSystem.getMoveCount();
+            }
+
+            animate() {
+                requestAnimationFrame(this.animate);
+                const time = this.clock.getElapsedTime();
+                
+                // Partículas
+                if (this.particleSystem) {
+                    this.particleSystem.rotation.y = time * 0.02;
+                    this.particleSystem.position.y = Math.sin(time * 0.2) * 0.5;
+                }
+
+                // Animações do nível
+                if (this.levelManager) {
+                    this.levelManager.updateAnimations(time);
+                }
+
+                if (this.state === 'MENU') {
+                    const radius = 10;
+                    this.camera.position.x = Math.sin(time * 0.12) * radius;
+                    this.camera.position.z = Math.cos(time * 0.12) * radius;
+                    this.camera.position.y = 7 + Math.sin(time * 0.2) * 0.5;
+                    this.camera.lookAt(0, 0, 0);
+                    
+                    if (this.block && this.block.mesh) {
+                        this.block.mesh.position.y = 1 + Math.sin(time * 1.2) * 0.15;
+                        this.block.mesh.rotation.y = time * 0.15;
+                    }
+                }
+
+                this.renderer.render(this.scene, this.camera);
+            }
+        }
+
+        // ==========================================
+        // INICIALIZAÇÃO
+        // ==========================================
+        document.addEventListener('DOMContentLoaded', () => {
+            console.log('DOM carregado!');
+            try {
+                window.game = new Game();
+                console.log('Jogo criado com sucesso!');
+            } catch (error) {
+                console.error('ERRO ao criar o jogo:', error);
+                document.body.innerHTML += `
+                    <div style="position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);
+                         color:#ff4444;background:#1a1a1a;padding:30px;border-radius:10px;
+                         font-family:Arial;text-align:center;z-index:9999;border:2px solid #ff4444;">
+                        <h2>Erro ao carregar o jogo</h2>
+                        <p style="color:#888;font-size:14px;margin-top:10px;">${error.message}</p>
+                        <p style="color:#666;font-size:12px;margin-top:20px;">Verifique o console para mais detalhes</p>
+                    </div>
+                `;
+            }
+        });
+
+        if (document.readyState === 'complete' || document.readyState === 'interactive') {
+            console.log('DOM já estava carregado, iniciando...');
+            setTimeout(() => {
+                if (!window.game) {
+                    try {
+                        window.game = new Game();
+                    } catch (e) {
+                        console.error('Erro no fallback:', e);
+                    }
+                }
+            }, 100);
+        }
+    </script>
+</body>
+</html>
