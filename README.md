@@ -1,6 +1,6 @@
 #  Project Monolith: Spatial Ruins
 
-> Um puzzle game 3D isometrico para navegador, inspirado no clássico *Bloxorz*, desenvolvido com **Three.js**, **GSAP** e **HTML5/CSS3**.
+> Um puzzle game 3D isometrico para navegador, inspirado no clássico *Bloxorz*, desenvolvido com **HTML5/CSS3**.
 
 ![Game Banner / Screenshot](https://raw.githubusercontent.com/seu-usuario/project-monolith/main/assets/banner.jpg)
 
