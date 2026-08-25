@@ -1,4 +1,4 @@
-# 🧊 The Block — Bloxorz 3D Remake
+#  The Block — Bloxorz 3D Remake
 
 <p align="center">
   <img src="https://img.shields.io/badge/Status-Conclu%C3%ADdo-00ccff?style=for-the-badge" alt="Status">
@@ -14,7 +14,7 @@
 
 ---
 
-## 🎮 Sobre o Jogo
+##  Sobre o Jogo
 
 O objetivo do jogador é rolar um bloco retangular de dimensões **1x2x1** por um grid de blocos flutuantes, evitando cair no abismo cósmico e lidando com terrenos frágeis. Cada movimento altera a orientação do bloco entre vertical e horizontal (eixos X e Z).
 
@@ -22,20 +22,19 @@ Para vencer cada fase, o bloco deve terminar perfeitamente **em pé** sobre o or
 
 ---
 
-## ✨ Funcionalidades Principais
+##  Funcionalidades Principais
 
-- 🧠 **12 Níveis Desafiadores**: Fases projetadas com progressão gradual de dificuldade e desafios espaciais instigantes.
-- 📐 **Física de Rotação 3D Precisa**: Sistema de pivô calculado dinamicamente em Three.js para tombamento realista do bloco.
-- ⭐ **Sistema de Desempenho e Estrelas**: Avaliação de 1 a 3 estrelas baseada na quantidade de movimentos realizados vs. movimentos ideais.
-- ↩️ **Função de Desfazer (Undo)**: Possibilidade de reverter jogadas passo a passo sem perder o progresso.
-- 💾 **Salvamento Automático**: Persistência de fases desbloqueadas, melhor pontuação e estrelas salvas localmente via `LocalStorage`.
-- 🎵 **Áudio Procedural em Tempo Real**: Efeitos sonoros gerados dinamicamente via `Web Audio API` (rolagem, queda, impacto, vitória e derrota), sem necessidade de arquivos externos de áudio.
-- 🌌 **Visual Cyberpunk / Neon**: Iluminação tridimensional suave, efeito glow/emissivo, partículas cósmicas em suspensão e câmera orbital dinâmica no menu.
-- 📱 **Totalmente Responsivo**: Suporte para teclado (Desktop) e gestos por toque / swipe (Mobile & Tablets).
+-  **12 Níveis Desafiadores**: Fases projetadas com progressão gradual de dificuldade e desafios espaciais instigantes.
+-  **Física de Rotação 3D Precisa**: Sistema de pivô calculado dinamicamente em Three.js para tombamento realista do bloco.
+-  **Sistema de Desempenho e Estrelas**: Avaliação de 1 a 3 estrelas baseada na quantidade de movimentos realizados vs. movimentos ideais.
+-  **Função de Desfazer (Undo)**: Possibilidade de reverter jogadas passo a passo sem perder o progresso.
+-  **Salvamento Automático**: Persistência de fases desbloqueadas, melhor pontuação e estrelas salvas localmente via `LocalStorage`.
+-  **Visual Cyberpunk / Neon**: Iluminação tridimensional suave, efeito glow/emissivo, partículas cósmicas em suspensão e câmera orbital dinâmica no menu.
+
 
 ---
 
-## 🕹️ Controles
+##  Controles
 
 | Controle | Teclado | Touch / Mobile | Ação |
 | :--- | :--- | :--- | :--- |
@@ -46,7 +45,7 @@ Para vencer cada fase, o bloco deve terminar perfeitamente **em pé** sobre o or
 
 ---
 
-## 🧩 Elementos e Mecânicas de Terreno
+##  Elementos e Mecânicas de Terreno
 
 | Elemento | Visual | Comportamento |
 | :--- | :--- | :--- |
@@ -56,7 +55,7 @@ Para vencer cada fase, o bloco deve terminar perfeitamente **em pé** sobre o or
 
 ---
 
-## 🛠️ Tecnologias Utilizadas
+##  Tecnologias Utilizadas
 
 - **[HTML5](https://developer.mozilla.org/pt-BR/docs/Web/HTML)** & **[CSS3](https://developer.mozilla.org/pt-BR/docs/Web/CSS)**: Estrutura semântica, fontes (*Rajdhani*), efeitos de vidro (*glassmorphism*) e animações de glitch.
 - **[JavaScript (ES6+)](https://developer.mozilla.org/pt-BR/docs/Web/JavaScript)**: Arquitetura modular orientada a objetos.
@@ -66,7 +65,7 @@ Para vencer cada fase, o bloco deve terminar perfeitamente **em pé** sobre o or
 
 ---
 
-## 🚀 Como Executar o Projeto
+##  Como Executar o Projeto
 
 Como o jogo foi desenvolvido de forma auto-contida e moderna em Web standards, não é necessária instalação de dependências ou compilação:
 
@@ -87,7 +86,7 @@ Em seguida, acesse no navegador: `http://localhost:8000` (ou a porta indicada).
 
 ---
 
-## 🏗️ Estrutura do Código
+##  Estrutura do Código
 
 ```text
 The-New-Block/
