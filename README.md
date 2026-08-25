@@ -5,9 +5,6 @@
 ![Game Banner / Screenshot](https://raw.githubusercontent.com/seu-usuario/project-monolith/main/assets/banner.jpg)
 
 [![GitHub Pages](https://img.shields.io/badge/Deploy-GitHub%20Pages-blue?style=for-the-badge&logo=github)](https://seu-usuario.github.io/project-monolith/)
-[![Three.js](https://img.shields.io/badge/Three.js-r128-black?style=for-the-badge&logo=three.js)](https://threejs.org/)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg?style=for-the-badge)](LICENSE)
-
 ---
 
 ##  Sobre o Projeto
