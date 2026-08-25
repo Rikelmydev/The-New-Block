@@ -1,4 +1,4 @@
-#  The Block — Bloxorz 3D Remake
+#  The Block 
 
 <p align="center">
   <img src="https://img.shields.io/badge/Status-Conclu%C3%ADdo-00ccff?style=for-the-badge" alt="Status">
