@@ -43,15 +43,6 @@ Para vencer cada fase, o bloco deve terminar perfeitamente **em pé** sobre o or
 | **Reiniciar Fase** | <kbd>R</kbd> | Botão **⟳ Reiniciar** | Reinicia a posição e contador da fase |
 | **Menu de Fases** | — | Botão **☰ Menu** | Retorna à seleção de fases e menu inicial |
 
----
-
-##  Elementos e Mecânicas de Terreno
-
-| Elemento | Visual | Comportamento |
-| :--- | :--- | :--- |
-| **Piso Sólido** | ![#1a3a5a](https://via.placeholder.com/15/1a3a5a/000000?text=+) Azul Escuro | Superfície estável e segura para qualquer orientação do bloco. |
-| **Piso Frágil (Vidro)** | ![#6a2be2](https://via.placeholder.com/15/6a2be2/000000?text=+) Roxo / Translúcido | Suporta o bloco deitado. **Atenção:** se o bloco ficar **em pé verticalmente** sobre ele, o piso se quebrará e o bloco cairá no vazio! |
-| **Portal de Saída** | ![#00ff88](https://via.placeholder.com/15/00ff88/000000?text=+) Verde Neon Radiante | Ponto final da fase. Requer que o bloco fique posicionado **em pé na vertical** diretamente sobre ele. |
 
 ---
 
