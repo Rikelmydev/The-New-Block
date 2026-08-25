@@ -1,4 +1,6 @@
 #  The Block 
+<img width="1365" height="589" alt="image" src="https://github.com/user-attachments/assets/5bf7ab6c-a421-456f-9281-2ee75d95ad1a" />
+
 
 <p align="center">
   <img src="https://img.shields.io/badge/Status-Conclu%C3%ADdo-00ccff?style=for-the-badge" alt="Status">
