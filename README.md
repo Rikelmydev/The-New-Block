@@ -29,7 +29,6 @@ Para vencer cada fase, o bloco deve terminar perfeitamente **em pé** sobre o or
 -  **Sistema de Desempenho e Estrelas**: Avaliação de 1 a 3 estrelas baseada na quantidade de movimentos realizados vs. movimentos ideais.
 -  **Função de Desfazer (Undo)**: Possibilidade de reverter jogadas passo a passo sem perder o progresso.
 -  **Salvamento Automático**: Persistência de fases desbloqueadas, melhor pontuação e estrelas salvas localmente via `LocalStorage`.
--  **Visual Cyberpunk / Neon**: Iluminação tridimensional suave, efeito glow/emissivo, partículas cósmicas em suspensão e câmera orbital dinâmica no menu.
 
 
 ---
