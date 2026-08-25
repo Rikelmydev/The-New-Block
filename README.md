@@ -1,7 +1,7 @@
 # 🧊 The Block — Bloxorz 3D Remake
 
 <p align="center">
-  <img src="https://img.shields.io/badge/Status-Concluído-00ccff?style=for-the-badge" alt="Status">
+  <img src="https://img.shields.io/badge/Status-Conclu%C3%ADdo-00ccff?style=for-the-badge" alt="Status">
   <img src="https://img.shields.io/badge/Three.js-r128-black?style=for-the-badge&logo=three.js" alt="Three.js">
   <img src="https://img.shields.io/badge/GSAP-3.12.5-88CE02?style=for-the-badge&logo=greensock" alt="GSAP">
   <img src="https://img.shields.io/badge/JavaScript-ES6+-F7DF1E?style=for-the-badge&logo=javascript&logoColor=black" alt="JavaScript">
@@ -59,7 +59,7 @@ Para vencer cada fase, o bloco deve terminar perfeitamente **em pé** sobre o or
 ## 🛠️ Tecnologias Utilizadas
 
 - **[HTML5](https://developer.mozilla.org/pt-BR/docs/Web/HTML)** & **[CSS3](https://developer.mozilla.org/pt-BR/docs/Web/CSS)**: Estrutura semântica, fontes (*Rajdhani*), efeitos de vidro (*glassmorphism*) e animações de glitch.
-- **[JavaScript (ES6+)](https://developer.mozilla.org/pt-BR/docs/Web/JavaScript)**: Arquitetura modular orientada a objetos (classes `Game`, `Block`, `GridSystem`, `LevelManager`, `AudioManager`, `StorageManager`, `Controls`).
+- **[JavaScript (ES6+)](https://developer.mozilla.org/pt-BR/docs/Web/JavaScript)**: Arquitetura modular orientada a objetos.
 - **[Three.js (r128)](https://threejs.org/)**: Renderização 3D WebGL, iluminação dinâmica, sombras, geometrias e sistema de partículas.
 - **[GSAP 3.12.5](https://greensock.com/gsap/)**: Interpolações e animações suaves de rotação do bloco, transições e janelas modais.
 - **[Web Audio API](https://developer.mozilla.org/pt-BR/docs/Web/API/Web_Audio_API)**: Sintetizador de ondas sonoras (*sine*, *square*, *sawtooth*, *triangle*) para áudio imersivo sem latência.
@@ -68,7 +68,7 @@ Para vencer cada fase, o bloco deve terminar perfeitamente **em pé** sobre o or
 
 ## 🚀 Como Executar o Projeto
 
-Como o jogo foi desenvolvido de forma auto-contida e moderna em Web standards, não é necessária instalação de dependências ou build:
+Como o jogo foi desenvolvido de forma auto-contida e moderna em Web standards, não é necessária instalação de dependências ou compilação:
 
 ### Opção 1: Execução Direta
 Basta dar um duplo clique no arquivo [`index.html`](index.html) para abri-lo em qualquer navegador moderno (Chrome, Edge, Firefox, Safari, Opera).
@@ -89,19 +89,11 @@ Em seguida, acesse no navegador: `http://localhost:8000` (ou a porta indicada).
 
 ## 🏗️ Estrutura do Código
 
-O projeto está organizado com uma arquitetura clara e modular:
-
 ```text
 The-New-Block/
 │
-├── index.html          # Arquivo principal contendo HTML, CSS e JavaScript modular:
-│                       #  ├── StorageManager  (Persistência e desbloqueio de fases)
-│                       #  ├── AudioManager    (Sintetizador Web Audio API)
-│                       #  ├── GridSystem      (Lógica matemática de matrizes e validações)
-│                       #  ├── LevelManager    (Construção de malhas 3D das fases)
-│                       #  ├── Controls        (Tratamento de teclado e touch swipe)
-│                       #  ├── Block           (Malhas, animações de rolagem e estados)
-│                       #  └── Game            (Loop principal, cena Three.js e UI)
+├── index.html          # Arquivo principal contendo HTML, CSS e JavaScript do jogo
+├── .gitattributes      # Configurações de atributos do Git
 └── README.md           # Documentação completa do projeto
 ```
 
